@@ -15,4 +15,4 @@ The model building process involved the following key steps:
 
 ## Application
 
-A live version of this model is available at 
+A live version of this model is available at https://bit.ly/Juwon-Car-Price-Model
