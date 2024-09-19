@@ -1,7 +1,8 @@
 import pickle 
 import streamlit as st
 
-model = pickle.load(open("C:/Users/adenu/Downloads/Python_notebooks-2/Python_notebooks/ML Projects/Car price prediction project/Car price prediction model/car_price_predictor.pkl",'rb'))
+model_path = os.path.join(os.path.dirname(__file__), 'car_price_predictor.pkl.pkl')  # Change 'model.pkl' to your actual model filename
+model = pickle.load(open(model_path, 'rb'))
 
 def main():
     st.title('Car Pricing Predictor')
