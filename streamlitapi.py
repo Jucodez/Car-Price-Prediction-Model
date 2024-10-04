@@ -1,25 +1,61 @@
 import pickle 
 import streamlit as st
 import os
+import pandas as pd  # Import pandas
 
-model_path = os.path.join(os.path.dirname(__file__), 'car_price_predictor.pkl')  # Change 'model.pkl' to your actual model filename
+# Load the model
+model_path = os.path.join(os.path.dirname(__file__), 'Student_Performance_Prediction_Model.pkl') 
 model = pickle.load(open(model_path, 'rb'))
 
 def main():
-    st.title('Car Pricing Predictor')
+    st.title('Student Performance Prediction')
 
-    #input variables
-    Year = st.text_input('Year of Manufacture')
-    Km_driven = st.text_input('Kilometers Driven')
-    engine = st.text_input('Engine Capacity (cc)')
-    max_power = st.text_input('Maximum Power (bhp)')
-    mileage_kmpl = st.text_input('Fuel Efficiency (kmpl)')
+    # Input variables with placeholders
+    Age = st.text_input('Age of student (years)', placeholder="e.g., 18")
+    Library = st.text_input('Hours in the library per week', placeholder="e.g., 5")
+    Class = st.text_input('Hours of class attendance per week', placeholder="e.g., 20")
+    Extracurricular = st.text_input('Hours of extra-curricular activities per week', placeholder="e.g., 10")
+    
+    # Initialize error tracking
+    error = False
 
-    if st.button('Predict'):
-        makeprediction = model.predict([[Year,Km_driven,engine,max_power,mileage_kmpl]])
-        output = round(makeprediction[0]*19.61,-3)
-        formatted_output = "{:,.0f}".format(output)
-        st.success('You Can Sell Your Car for {} Naira'. format (formatted_output))
+    # Validation for each input (ensure they are integers)
+    try:
+        Age = int(Age)
+    except ValueError:
+        st.error("Please enter a valid integer for Age.")
+        error = True
+
+    try:
+        Library = int(Library)
+    except ValueError:
+        st.error("Please enter a valid integer for Library weekly hours.")
+        error = True
+
+    try:
+        Class = int(Class)
+    except ValueError:
+        st.error("Please enter a valid integer for Class weekly attendance hours.")
+        error = True
+
+    try:
+        Extracurricular = int(Extracurricular)
+    except ValueError:
+        st.error("Please enter a valid integer for Extra-curricular weekly hours.")
+        error = True
+
+    # Only proceed with prediction if there are no errors
+    if st.button('Predict') and not error:
+        # Create a DataFrame with the correct column names
+        input_data = pd.DataFrame([[Age, Library, Class, Extracurricular]], 
+                                  columns=['Age', 'Library_weekly_hours', 'Class_weekly_attendance_hours', 'Extra-curricular_weekly_hours'])
+        
+        # Perform the prediction
+        makeprediction = model.predict(input_data)
+        score = makeprediction[0]
+        
+        # Display the result
+        st.success(f'This student is expected to score {score:.0f} in their upcoming exam')
 
 if __name__ == '__main__':
     main()
